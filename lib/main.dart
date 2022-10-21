@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      routes:  getAppRoutes(),
+      routes: getAppRoutes(),
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.yellow,
       ),
-     initialRoute: Routes.HOME,
+      initialRoute: Routes.HOME,
     );
   }
 }
