@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:user_consumer/services/model/user_consumer.dart';
 import 'package:user_consumer/viewmodel/view_model_home.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,45 +12,38 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ViewModelHome viewModelHome = ViewModelHome();
-  bool visibleList = false;
+  late Future<List<User>?> _listUser;
   @override
   void initState() {
     super.initState();
-    viewModelHome.getProviderList();
-    setState(() {
-      visibleList = true;
-    });
+    _listUser = viewModelHome.getProviderList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-            width: MediaQuery.of(context).size.width,
-            child: SingleChildScrollView(
-                child: Column(children: [
-              const Text(
-                "USERS",
-                style: TextStyle(fontSize: 25, color: Colors.deepOrangeAccent),
-              ),
-              Visibility(
-                  visible: visibleList,
-                  child: GridView.builder(
-                      physics: const ScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: viewModelHome.getList()?.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2),
-                      itemBuilder: (context, index) {
-                        return Padding(
-                            padding: EdgeInsets.all(30.0),
-                            child: Card(
-                              child: Center(
-                                  child: Text(
-                                      viewModelHome.getList()![index].name)),
-                            ));
-                      }))
-            ]))));
+      body: FutureBuilder(
+        future: _listUser,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return GridView.builder(
+                itemCount: snapshot.data?.length,
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2),
+                itemBuilder: (context, index) {
+                  return Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Card(
+                        child: Center(child: Text(snapshot.data![index].name)),
+                      ));
+                });
+          }
+          return const Center(
+            child: CircularProgressIndicator()
+          );
+        },
+      ),
+    );
   }
 }
