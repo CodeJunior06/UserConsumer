@@ -1,7 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:user_consumer/routes/route.dart';
 import 'package:user_consumer/services/model/user_consumer.dart';
 import 'package:user_consumer/viewmodel/view_model_home.dart';
 
@@ -16,6 +14,7 @@ class _HomePageState extends State<HomePage> {
   ViewModelHome viewModelHome = ViewModelHome();
 
   late Future<List<User>?> _listUser;
+
   @override
   void initState() {
     super.initState();
@@ -29,14 +28,14 @@ class _HomePageState extends State<HomePage> {
             body: Column(
       children: [
         Container(
-          child: Text("USERS CONSUMER",
+          color: Colors.lime,
+          width: double.infinity,
+          child: const Text("USERS CONSUMER",
               style: TextStyle(
                   color: Colors.black87,
                   fontSize: 25.0,
                   fontWeight: FontWeight.w600),
               textAlign: TextAlign.center),
-          color: Colors.lime,
-          width: double.infinity,
         ),
         Expanded(
           child: FutureBuilder(
@@ -48,17 +47,30 @@ class _HomePageState extends State<HomePage> {
                     shrinkWrap: true,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                            mainAxisExtent: 150, crossAxisCount: 2),
+                            mainAxisExtent: 130.0, crossAxisCount: 2),
                     itemBuilder: (context, index) {
                       return Padding(
-                        padding: const EdgeInsets.all(30.0),
-                        child: Card(
-                            shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0))),
-                            elevation: 5.0,
-                            child: Text(snapshot.data![index].name)),
-                      );
+                          padding: const EdgeInsets.only(
+                              left: 30, right: 30, top: 20),
+                          child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, Routes.ITEM,
+                                    arguments: snapshot.data![index]);
+                              },
+                              child: Card(
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(10.0))),
+                                elevation: 5.0,
+                                child: Center(
+                                    child: Center(
+                                        child: Text(
+                                  snapshot.data![index].name,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w500),
+                                  textAlign: TextAlign.end,
+                                ))),
+                              )));
                     });
               }
               return const Center(child: CircularProgressIndicator());
