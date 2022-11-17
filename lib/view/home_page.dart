@@ -23,20 +23,25 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    double dWidth = MediaQuery.of(context).size.width;
+    double dheight = MediaQuery.of(context).size.height;
     return SafeArea(
         child: Scaffold(
             body: Column(
       children: [
         Container(
-          color: Colors.lime,
-          width: double.infinity,
-          child: const Text("USERS CONSUMER",
-              style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.w600),
-              textAlign: TextAlign.center),
-        ),
+            color:  Colors.transparent,
+            height: dheight * 0.1,
+            width: double.infinity,
+            child: CustomPaint(
+              painter: _HeaderPainter(),
+              child: const Text("USERS CONSUMER",
+                  style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.center),
+            )),
         Expanded(
           child: FutureBuilder(
             future: _listUser,
@@ -79,5 +84,43 @@ class _HomePageState extends State<HomePage> {
         )
       ],
     )));
+  }
+}
+
+class _HeaderPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint();
+    paint.color = Colors.lightBlue;
+    paint.style = PaintingStyle.fill;
+    paint.strokeWidth = 20;
+
+    final path = Path();
+
+    /*
+     moverse sin dejar linea o rastro en el PATH pintado
+     path.moveTo(0,0);
+
+     linea que se pinta en el canvas de acuerdo al PATH registrado
+     path.lineTo(0, size.height);
+     path.lineTo(size.width, size.height);
+     path.lineTo(size.width, 0);
+     */
+
+    // linea ondulada o circular que se le da a un PATH para que se pueda pintar en el canvas
+    path.lineTo(0, size.height );
+    path.quadraticBezierTo(
+        size.width * 0.25, size.height*1.5, size.width * 0.5, size.height );
+    path.quadraticBezierTo(
+        size.width * 0.75, size.height*0.5, size.width, size.height );
+    path.lineTo(size.width, 0);
+    path.lineTo(0, 0);
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }
